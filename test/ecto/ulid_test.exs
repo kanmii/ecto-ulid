@@ -8,7 +8,7 @@ defmodule Ecto.ULIDTest do
 
   test "generate/0 encodes milliseconds in first 10 characters" do
     # test case from ULID README: https://github.com/ulid/javascript#seed-time
-    <<encoded::bytes-size(10), _rest::bytes-size(16)>> = Ecto.ULID.generate(1469918176385)
+    <<encoded::bytes-size(10), _rest::bytes-size(16)>> = Ecto.ULID.generate(1_469_918_176_385)
 
     assert encoded == "01ARYZ6S41"
   end
@@ -134,5 +134,27 @@ defmodule Ecto.ULIDTest do
 
   test "load/1 returns error when data is too long" do
     assert Ecto.ULID.load(<<0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0>>) == :error
+  end
+
+  test "equal?/1 compares correctly two equal string ULIDs" do
+    ulid = Ecto.ULID.generate()
+    assert Ecto.ULID.equal?(ulid, ulid) == true
+  end
+
+  test "equal?/1 compares correctly two different string ULIDs" do
+    ulid1 = Ecto.ULID.generate()
+    ulid2 = Ecto.ULID.generate()
+    assert Ecto.ULID.equal?(ulid1, ulid2) == false
+  end
+
+  test "equal?/1 compares correctly two equal binary ULIDs" do
+    ulid = Ecto.ULID.bingenerate()
+    assert Ecto.ULID.equal?(ulid, ulid) == true
+  end
+
+  test "equal?/1 compares correctly two different binary ULIDs" do
+    ulid1 = Ecto.ULID.bingenerate()
+    ulid2 = Ecto.ULID.bingenerate()
+    assert Ecto.ULID.equal?(ulid1, ulid2) == false
   end
 end
